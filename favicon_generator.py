@@ -1,4 +1,4 @@
-#%%
+"""Prompt based image generation, using a stable diffusion model hosted by huggingface."""
 from diffusers import StableDiffusionPipeline
 from torch import autocast
 from tqdm import tqdm
@@ -20,7 +20,7 @@ def generate_image(pipe: object, prompt: str, guidance_scale: float):
     """Generate images.
 
     Args:
-        pipe (object): Class object: diffu
+        pipe (object): Class object: diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline
         prompt (str): Prompt used to generate image.
         guidance_scale (float): Guidance scales determine how much the model should follow the prompt.  Lower values are 
             less reflective of the prompt.
@@ -85,12 +85,12 @@ if __name__ == '__main__':
 
     # Set image generating prompts.
     # prompts = ["favicon of an octopus", "goose god"]
-    prompts = ["goose god"]
+    prompts = ["animation of a greek god in the form of a goose"]
 
     # Guidance scales determine how much the model should follow the prompt.  
     # Lower values are less reflective of the prompt.
     # guidance_scales = np.arange(1,11,1)
-    guidance_scales = [7.5]
+    guidance_scales = np.arange(9,11,1)
 
     # Choose model.
     model_id = "CompVis/stable-diffusion-v1-4"
@@ -103,61 +103,12 @@ if __name__ == '__main__':
     # Environment settings.
     pipe = StableDiffusionPipeline.from_pretrained(model_id, use_auth_token=True) #, torch_dtype=torch.float16, revision="fp16")
     pipe = pipe.to(device)
-    print(f"type(pipe): {type(pipe)}")
 
     for prompt in tqdm(prompts):
         for guidance_scale in tqdm(guidance_scales):
-            print(f"{fig_path}/{figname}_guidance_scale_{guidance_scale}.png")
             try:
                 image = generate_image(pipe=pipe, prompt=prompt, guidance_scale=guidance_scale)
                 figname = generate_figure_name(prompt=prompt, fig_path=fig_path, guidance_scale=guidance_scale, img_extension="png")
                 save_out_image(image=image, figname=figname)
             except:
                 print(f"\n\n\nprpmpt '{prompt}' failed\n\n\n")
-
-
-
-
-
-
-
-#%%
-# prompts = ["favicon of an octopus",
-# "favicon of artificial intelligence consulting group",
-# "favicon of artificial intelligence consulting group at lockheed martin",
-# "favicon of an artificial intelligence consulting",
-# "logo for artificial intelligence consulting team",
-# "favicon artificial intelligence",
-# "favicon artificial intelligence consulting",
-# "favicon artificial intelligence consulting logo",
-# "artificial intelligence consulting logo",
-# "favicon of artificial intelligence at lockheed martin",
-# "artificial intelligence at lockheed martin",
-# "artificial intelligence consulting at lockheed martin",
-# "lockheed martin artificial intelligence consulting",
-# "artificial intelligence consulting team logo at lockheed martin",
-# "lockheed martin artificial intelligence consulting logo",
-# "artificial intelligence consulting team logo",
-# "lockheed martin artificial intelligence consulting team logo",
-# "artificial intelligence consulting logo for a defense contractor",
-# "logo for an artificial intelligence consulting group",
-# "logo for an artificial intelligence consulting group at lockheed martin",
-# "logo for a defense contracting artificial intelligence consulting group",
-# "lockheed martin favicon",
-# "favicon of a tako",
-# ]
-
-
-
-
-# guidance_scales = np.arange(1,11,1)
-# for prompt in tqdm(prompts):
-#     for guidance_scale in tqdm(guidance_scales):
-#         # print(f"{fig_path}/{figname}_guidance_scale_{guidance_scale}.png")
-#         try:
-#             with autocast("cuda"):
-#                 image = pipe(prompt, guidance_scale=guidance_scale).images[0]  
-#             figname = prompt.replace(" ", "_")
-#             image.save(f"{fig_path}/{figname}_guidance_scale_{guidance_scale}.png")
-#         except:
-#             print(f"\n\n\nprpmpt '{prompt}' failed\n\n\n")
