@@ -5,7 +5,7 @@ Sample_spacy.py
 sample.py
 favicon.txt
 testy.py
-figs/*.png
+figs/_various_pngs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
